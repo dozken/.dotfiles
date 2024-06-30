@@ -1,27 +1,6 @@
-# zmodload zsh/zprof
-
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-# Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="apple" # set by `omz`
-ZSH_THEME="powerlevel10k/powerlevel10k"
-# ZSH_THEME="wezm+" # set by `omz`
-
+ZSH_THEME="robbyrussell"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -83,16 +62,14 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-# plugins=(zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-
 # export MANPATH="/usr/local/man:$MANPATH"
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-export PATH=$PATH:$(go env GOPATH)/bin
+source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -104,72 +81,51 @@ export PATH=$PATH:$(go env GOPATH)/bin
 #   export EDITOR='mvim'
 # fi
 
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# Set personal aliases, overriding those provided by Oh My Zsh libs,
+# plugins, and themes. Aliases can be placed here, though Oh My Zsh
+# users are encouraged to define aliases within a top-level file in
+# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
+# - $ZSH_CUSTOM/aliases.zsh
+# - $ZSH_CUSTOM/macos.zsh
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias vim="nvim"
-alias ls="exa -al --icons"
+alias v="nvim"
+
+alias ls="lsd"
+alias l='ls -l'
+alias la="ls -l --git -a"
+alias lt="ls --tree --depth=2 --long --git"
+
 alias cat="bat"
-alias air='~/go/bin/air'
 alias grep="rg"
 
+# tmux sessionizer
 function run_tmux_sessionizer() {
-    BUFFER='tmux new ~/.dotfiles/scripts/tmux-sessionizer'
+    BUFFER='tmux new $HOME/.config/tmux/scripts/tmux-sessionizer'
     zle accept-line
 }
 zle -N run_tmux_sessionizer
 bindkey '^f' run_tmux_sessionizer
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# golang
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+export PATH=$PATH:$(go env GOPATH)/bin
 
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# source /usr/local/opt/powerlevel10k/powerlevel10k.zsh-theme
-
-# pnpm
-# export PNPM_HOME="/Users/dozh/Library/pnpm"
-# case ":$PATH:" in
-#   *":$PNPM_HOME:"*) ;;
-#   *) export PATH="$PNPM_HOME:$PATH" ;;
-# esac
-# pnpm end
-
-#git-worktree copy .env & .npmrc
-# move to nvim plugin to hook on worktree 
-# source ~/.dotfiles/scripts/git-worktree
-
-export PATH="/usr/local/opt/libpq/bin:$PATH"
+# bun
 export PATH="$PATH:/Users/dozh/.bun/bin"
 
-
-# Load Angular CLI autocompletion.
-# source <(ng completion script)
-# export PATH="/usr/local/opt/openjdk/bin:$PATH"
-
-
-# fnm
+# fast node manager
 export PATH="/Users/dozh/Library/Application Support/fnm:$PATH"
 eval "`fnm env`"
 
-# export NVM_DIR="$HOME/.nvm"
-#   [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-#   [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-# zprof
-#
-# export PATH="/Users/dozh/projects/thymeleaf_ls/target/debug:$PATH"
-
-# opam configuration
-[[ ! -r /Users/dozh/.opam/opam-init/init.zsh ]] || source /Users/dozh/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+# sdk manager
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

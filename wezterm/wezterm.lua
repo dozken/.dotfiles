@@ -10,11 +10,12 @@ if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
-local custom = wezterm.color.get_builtin_schemes()["Catppuccin Mocha"]
--- custom.background = "#000000"
-config.color_schemes = {
-	["OLEDppuccin"] = custom,
-}
+-- local custom = wezterm.color.get_builtin_schemes()["Catppuccin Mocha"]
+-- -- custom.background = "#000000"
+-- config.color_schemes = {
+-- 	["OLEDppuccin"] = custom,
+-- }
+config.color_scheme = "Catppuccin Mocha"
 -- config.color_scheme = "OLEDppuccin"
 
 -- config.window_decorations = "NONE"
@@ -23,6 +24,7 @@ config.font = wezterm.font("JetBrains Mono")
 config.font_size = 16
 config.window_background_opacity = 0.9
 config.macos_window_background_blur = 10
+-- config.macos_window_background_blur = 30
 config.window_padding = {
 	left = 2,
 	right = 2,
@@ -34,7 +36,21 @@ config.window_padding = {
 
 -- config.default_gui_startup_args = { "fullscreen" }
 local act = wezterm.action
-config.keys = {}
+config.mouse_bindings = {
+	-- Ctrl-click will open the link under the mouse cursor
+	{
+		event = { Up = { streak = 1, button = "Left" } },
+		mods = "CMD",
+		action = wezterm.action.OpenLinkAtMouseCursor,
+	},
+}
+config.keys = {
+	{
+		key = "f",
+		mods = "CMD",
+		action = wezterm.action.ToggleFullScreen,
+	},
+}
 for i = 1, 9 do
 	local keyEntry = {
 		key = tostring(i),

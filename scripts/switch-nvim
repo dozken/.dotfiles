@@ -111,13 +111,11 @@ if [[ $# -eq 0 ]]; then
 
 else
 	case $1 in
-		lazy) setNeovimEnvironment ~/personal/lazy.starter ;;
+		lazyvim) setNeovimEnvironment ~/personal/lazyvim ;;
 		folke) setNeovimEnvironment ~/personal/LazyVim ;;
 		prime) setNeovimEnvironment ~/personal/init.lua ;;
 		kickstart) setNeovimEnvironment ~/personal/kickstart.nvim ;;
-		tj) setNeovimEnvironment ~/personal/tj.nvim ;;
 		dozken) setNeovimEnvironment ~/personal/dozken.nvim ;;
-		dotfiles) setNeovimEnvironment ~/.dotfiles/nvim ;;
 
 		default) defaultNeovimEnvironment ~/.config/nvim ;;
 		*)
