@@ -16,9 +16,12 @@ else
   compinit -C
 fi
 
+# Cache brew prefix to avoid repeated slow calls
+BREW_PREFIX=$(brew --prefix)
+
 # ── fzf-tab (must be after compinit, before other plugins) ──────────
-if [[ -d "$(brew --prefix)/opt/fzf-tab" ]]; then
-  source "$(brew --prefix)/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh"
+if [[ -d "$BREW_PREFIX/opt/fzf-tab" ]]; then
+  source "$BREW_PREFIX/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh"
   zstyle ':fzf-tab:*' fzf-flags --height=~50%
   zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd --color=always $realpath'
   zstyle ':fzf-tab:complete:z:*' fzf-preview 'lsd --color=always $realpath'
@@ -27,11 +30,11 @@ if [[ -d "$(brew --prefix)/opt/fzf-tab" ]]; then
 fi
 
 # ── Plugins ──────────────────────────────────────────────────────────
-[[ -f "$(brew --prefix)/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]] && \
-    source "$(brew --prefix)/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+[[ -f "$BREW_PREFIX/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]] && \
+    source "$BREW_PREFIX/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 
-[[ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
-    source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[[ -f "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+    source "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 command -v atuin >/dev/null && eval "$(atuin init zsh)"
 
@@ -59,6 +62,9 @@ export ANDROID_HOME=/opt/homebrew/share/android-commandlinetools
 path=(
     $HOME/.antigravity/antigravity/bin
     $HOME/.cargo/bin
+    $HOME/.docker/bin
+    $HOME/.npm-global/bin
+    $HOME/work/prince/bin
     $path
     $GOPATH/bin
     $HOME/.bun/bin
@@ -103,6 +109,6 @@ function wt {
 [[ -f ~/.env.secrets ]] && source ~/.env.secrets
 
 # ── AsyncAPI autocomplete ────────────────────────────────────────────
-ASYNCAPI_AC_ZSH_SETUP_PATH=/Users/dozken/Library/Caches/@asyncapi/cli/autocomplete/zsh_setup
+ASYNCAPI_AC_ZSH_SETUP_PATH=$HOME/Library/Caches/@asyncapi/cli/autocomplete/zsh_setup
 [[ -f $ASYNCAPI_AC_ZSH_SETUP_PATH ]] && source $ASYNCAPI_AC_ZSH_SETUP_PATH
 export DYLD_LIBRARY_PATH=$HOME/lib
