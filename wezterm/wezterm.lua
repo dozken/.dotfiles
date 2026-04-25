@@ -18,7 +18,7 @@ end
 config.color_scheme = "Catppuccin Mocha"
 -- config.color_scheme = "OLEDppuccin"
 
--- config.window_decorations = "NONE"
+config.window_decorations = "RESIZE"
 config.hide_tab_bar_if_only_one_tab = true
 config.font = wezterm.font("JetBrains Mono")
 config.font_size = 16
@@ -28,7 +28,7 @@ config.macos_window_background_blur = 10
 config.window_padding = {
 	left = 2,
 	right = 2,
-	-- top = 2,
+	top = 0,
 	bottom = 0,
 }
 -- config.enable_hyperlinks = true

@@ -1,131 +1,108 @@
-export ZSH="$HOME/.oh-my-zsh"
+# ── History ──────────────────────────────────────────────────────────
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt SHARE_HISTORY          # sync across sessions
+setopt HIST_IGNORE_ALL_DUPS   # remove older duplicates
+setopt HIST_REDUCE_BLANKS     # trim whitespace
+setopt HIST_IGNORE_SPACE      # prefix with space = private
+setopt INC_APPEND_HISTORY     # write immediately, not on exit
 
-ZSH_THEME="robbyrussell"
+# ── Completion (cached, rebuild once per day) ────────────────────────
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+# ── fzf-tab (must be after compinit, before other plugins) ──────────
+if [[ -d "$(brew --prefix)/opt/fzf-tab" ]]; then
+  source "$(brew --prefix)/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh"
+  zstyle ':fzf-tab:*' fzf-flags --height=~50%
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd --color=always $realpath'
+  zstyle ':fzf-tab:complete:z:*' fzf-preview 'lsd --color=always $realpath'
+  zstyle ':fzf-tab:complete:*:*' fzf-preview 'bat --color=always --line-range=:50 $realpath 2>/dev/null || lsd --color=always $realpath'
+  zstyle ':completion:*:descriptions' format '[%d]'
+fi
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+# ── Plugins ──────────────────────────────────────────────────────────
+[[ -f "$(brew --prefix)/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]] && \
+    source "$(brew --prefix)/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+[[ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+    source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+command -v atuin >/dev/null && eval "$(atuin init zsh)"
 
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
+# ── Prompt (Starship) ───────────────────────────────────────────────
+eval "$(starship init zsh)"
 
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
+# ── OLD PROMPT (robbyrussell recreation) ─────────────────────────────
+# Uncomment below and comment out the starship line above to revert:
+# autoload -Uz vcs_info
+# precmd() { vcs_info }
+# zstyle ':vcs_info:git:*' actionformats '%F{blue}git:(%F{red}%b|%a%F{blue})%f '
+# zstyle ':vcs_info:*' check-for-changes true
+# zstyle ':vcs_info:*' unstagedstr ' %F{yellow}●%f'
+# zstyle ':vcs_info:git:*' formats '%F{blue}git:(%F{red}%b%F{blue})%f%u '
+# setopt PROMPT_SUBST
+# PROMPT='%(?:%B%F{green}➜%f%b :%B%F{red}➜%f%b ) %F{cyan}%c%f ${vcs_info_msg_0_}'
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+# ── Smart cd (zoxide) ───────────────────────────────────────────────
+eval "$(zoxide init zsh)"
 
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+# ── PATH (high priority → low priority) ──────────────────────────────
+export GOPATH=$HOME/go
+export ANDROID_HOME=/opt/homebrew/share/android-commandlinetools
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+path=(
+    $HOME/.antigravity/antigravity/bin
+    $HOME/.cargo/bin
+    $path
+    $GOPATH/bin
+    $HOME/.bun/bin
+    $HOME/.maestro/bin
+    $ANDROID_HOME/cmdline-tools/latest/bin
+    $ANDROID_HOME/platform-tools
+)
+typeset -U path  # deduplicate
 
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-# export MANPATH="/usr/local/man:$MANPATH"
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+# ── Aliases ──────────────────────────────────────────────────────────
 alias v="nvim"
-
+alias ts="tailscale --socket=\$HOME/.local/share/tailscale/tailscaled.sock"
+alias tsd="tailscaled --tun=userspace-networking --state=\$HOME/.local/share/tailscale/tailscaled.state --socket=\$HOME/.local/share/tailscale/tailscaled.sock"
 alias ls="lsd"
 alias l='ls -l'
 alias la="ls -l --git -a"
 alias lt="ls --tree --depth=2 --long --git"
-
-alias cat="bat"
+alias docker-compose="docker compose"
 alias grep="rg"
 
-# tmux sessionizer
-function run_tmux_sessionizer() {
-    BUFFER='tmux new $HOME/.config/tmux/scripts/tmux-sessionizer'
-    zle accept-line
+# ── Keybindings ──────────────────────────────────────────────────────
+if [[ -o interactive ]]; then
+    function run_tmux_sessionizer() {
+        BUFFER='tmux new $HOME/.config/tmux/scripts/tmux-sessionizer'
+        zle accept-line
+    }
+    zle -N run_tmux_sessionizer
+    bindkey '^f' run_tmux_sessionizer
+fi
+
+# ── mise (node, java, and more) ─────────────────────────────────────
+eval "$(mise activate zsh)"
+
+# ── Lazy-load: wt (Windmill) ────────────────────────────────────────
+function wt {
+    unfunction wt
+    eval "$(command wt config shell init zsh)"
+    wt "$@"
 }
-zle -N run_tmux_sessionizer
-bindkey '^f' run_tmux_sessionizer
 
-# golang
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-export PATH=$PATH:$(go env GOPATH)/bin
+# ── Secrets ──────────────────────────────────────────────────────────
+[[ -f ~/.env.secrets ]] && source ~/.env.secrets
 
-# bun
-export PATH="$PATH:/Users/dozh/.bun/bin"
-
-# fast node manager
-export PATH="/Users/dozh/Library/Application Support/fnm:$PATH"
-eval "`fnm env`"
-
-# sdk manager
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+# ── AsyncAPI autocomplete ────────────────────────────────────────────
+ASYNCAPI_AC_ZSH_SETUP_PATH=/Users/dozken/Library/Caches/@asyncapi/cli/autocomplete/zsh_setup
+[[ -f $ASYNCAPI_AC_ZSH_SETUP_PATH ]] && source $ASYNCAPI_AC_ZSH_SETUP_PATH
+export DYLD_LIBRARY_PATH=$HOME/lib
