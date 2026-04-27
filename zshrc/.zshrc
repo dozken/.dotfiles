@@ -8,20 +8,66 @@ setopt HIST_REDUCE_BLANKS     # trim whitespace
 setopt HIST_IGNORE_SPACE      # prefix with space = private
 setopt INC_APPEND_HISTORY     # write immediately, not on exit
 
+# Compile sourced scripts once; later shells reuse the .zwc file.
+function _zcompile_if_needed() {
+  local file=$1
+  local zwc="${file}.zwc"
+  [[ -s "$file" ]] || return 1
+  if [[ ! -s "$zwc" || "$file" -nt "$zwc" ]]; then
+    zcompile "$file" 2>/dev/null || return 1
+  fi
+  return 0
+}
+
+function _source_compiled_if_present() {
+  local file=$1
+  [[ -f "$file" ]] || return 1
+  _zcompile_if_needed "$file" || return 1
+  source "$file"
+}
+
+# Cache generated shell init scripts so startup avoids repeated subprocesses.
+function _source_cached_init() {
+  local cmd_name=$1
+  local cache_file=$2
+  shift 2
+
+  (( $+commands[$cmd_name] )) || return
+
+  if [[ ! -s "$cache_file" || ${commands[$cmd_name]} -nt "$cache_file" ]]; then
+    command "$cmd_name" "$@" >| "$cache_file"
+  fi
+
+  _zcompile_if_needed "$cache_file"
+  source "$cache_file"
+}
+
+# Let compinit autoload bun completion instead of sourcing it every shell.
+[[ -d "$HOME/.bun" ]] && fpath=("$HOME/.bun" $fpath)
+
 # ── Completion (cached, rebuild once per day) ────────────────────────
 autoload -Uz compinit
 if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
-  compinit
+  compinit -d ~/.zcompdump
 else
-  compinit -C
+  compinit -C -d ~/.zcompdump
 fi
+_zcompile_if_needed ~/.zcompdump
 
-# Cache brew prefix to avoid repeated slow calls
-BREW_PREFIX=$(brew --prefix)
+# Reuse Homebrew shellenv from ~/.zprofile instead of spawning brew on every shell.
+BREW_PREFIX=${HOMEBREW_PREFIX:-/opt/homebrew}
+FZF_TAB_SCRIPT=$BREW_PREFIX/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh
+ZSH_SYNTAX_HIGHLIGHTING_SCRIPT=$BREW_PREFIX/opt/zsh-syntax-highlighting/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [[ ! -f "$ZSH_SYNTAX_HIGHLIGHTING_SCRIPT" ]]; then
+  ZSH_SYNTAX_HIGHLIGHTING_SCRIPT=$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+if [[ ! -f "$ZSH_SYNTAX_HIGHLIGHTING_SCRIPT" ]]; then
+  ZSH_SYNTAX_HIGHLIGHTING_SCRIPT=$BREW_PREFIX/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+fi
+ZSH_AUTOSUGGESTIONS_SCRIPT=$BREW_PREFIX/opt/zsh-autosuggestions/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # ── fzf-tab (must be after compinit, before other plugins) ──────────
-if [[ -d "$BREW_PREFIX/opt/fzf-tab" ]]; then
-  source "$BREW_PREFIX/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh"
+if _source_compiled_if_present "$FZF_TAB_SCRIPT"; then
   zstyle ':fzf-tab:*' fzf-flags --height=~50%
   zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd --color=always $realpath'
   zstyle ':fzf-tab:complete:z:*' fzf-preview 'lsd --color=always $realpath'
@@ -30,16 +76,12 @@ if [[ -d "$BREW_PREFIX/opt/fzf-tab" ]]; then
 fi
 
 # ── Plugins ──────────────────────────────────────────────────────────
-[[ -f "$BREW_PREFIX/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]] && \
-    source "$BREW_PREFIX/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
-
-[[ -f "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
-    source "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-
-command -v atuin >/dev/null && eval "$(atuin init zsh)"
+_source_compiled_if_present "$ZSH_SYNTAX_HIGHLIGHTING_SCRIPT"
+_source_compiled_if_present "$ZSH_AUTOSUGGESTIONS_SCRIPT"
 
 # ── Prompt (Starship) ───────────────────────────────────────────────
-eval "$(starship init zsh)"
+export STARSHIP_CONFIG=$HOME/.config/starship.toml
+_source_cached_init starship "$HOME/.cache/starship-init.zsh" init zsh
 
 # ── OLD PROMPT (robbyrussell recreation) ─────────────────────────────
 # Uncomment below and comment out the starship line above to revert:
@@ -53,17 +95,21 @@ eval "$(starship init zsh)"
 # PROMPT='%(?:%B%F{green}➜%f%b :%B%F{red}➜%f%b ) %F{cyan}%c%f ${vcs_info_msg_0_}'
 
 # ── Smart cd (zoxide) ───────────────────────────────────────────────
-eval "$(zoxide init zsh)"
+_source_cached_init zoxide "$HOME/.cache/zoxide-init.zsh" init zsh
 
 # ── PATH (high priority → low priority) ──────────────────────────────
 export GOPATH=$HOME/go
 export ANDROID_HOME=/opt/homebrew/share/android-commandlinetools
+export MISE_SHIMS_DIR=${MISE_SHIMS_DIR:-$HOME/.local/share/mise/shims}
 
 path=(
     $HOME/.antigravity/antigravity/bin
     $HOME/.cargo/bin
     $HOME/.docker/bin
+    $HOME/.dotfiles/scripts
+    $HOME/.local/bin
     $HOME/.npm-global/bin
+    $MISE_SHIMS_DIR
     $HOME/work/prince/bin
     $path
     $GOPATH/bin
@@ -96,7 +142,13 @@ if [[ -o interactive ]]; then
 fi
 
 # ── mise (node, java, and more) ─────────────────────────────────────
-eval "$(mise activate zsh)"
+if (( $+commands[mise] )); then
+  function mise() {
+    unfunction mise
+    _source_cached_init mise "$HOME/.cache/mise-init.zsh" activate zsh
+    mise "$@"
+  }
+fi
 
 # ── Lazy-load: wt (Windmill) ────────────────────────────────────────
 function wt {
@@ -106,9 +158,11 @@ function wt {
 }
 
 # ── Secrets ──────────────────────────────────────────────────────────
-[[ -f ~/.env.secrets ]] && source ~/.env.secrets
+ENV_SECRETS_FILE=$HOME/.env.secrets
+[[ -r $ENV_SECRETS_FILE && -s $ENV_SECRETS_FILE ]] && _source_compiled_if_present "$ENV_SECRETS_FILE"
 
 # ── AsyncAPI autocomplete ────────────────────────────────────────────
 ASYNCAPI_AC_ZSH_SETUP_PATH=$HOME/Library/Caches/@asyncapi/cli/autocomplete/zsh_setup
-[[ -f $ASYNCAPI_AC_ZSH_SETUP_PATH ]] && source $ASYNCAPI_AC_ZSH_SETUP_PATH
+_source_compiled_if_present "$ASYNCAPI_AC_ZSH_SETUP_PATH"
+
 export DYLD_LIBRARY_PATH=$HOME/lib
