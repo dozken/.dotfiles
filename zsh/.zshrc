@@ -97,6 +97,9 @@ _source_cached_init starship "$HOME/.cache/starship-init.zsh" init zsh
 # ── Smart cd (zoxide) ───────────────────────────────────────────────
 _source_cached_init zoxide "$HOME/.cache/zoxide-init.zsh" init zsh
 
+# ── Shell history (atuin) — fuzzy Ctrl-R, synced across sessions ─────
+_source_cached_init atuin "$HOME/.cache/atuin-init.zsh" init zsh
+
 # ── PATH (high priority → low priority) ──────────────────────────────
 export GOPATH=$HOME/go
 export ANDROID_HOME=/opt/homebrew/share/android-commandlinetools
@@ -140,6 +143,11 @@ if [[ -o interactive ]]; then
     zle -N run_tmux_sessionizer
     bindkey '^f' run_tmux_sessionizer
 fi
+
+# ── fnm (node) — auto-switches to .nvmrc on cd ──────────────────────
+# Not cached: `fnm env` emits a per-shell multishell path, so it must run
+# fresh each shell rather than via _source_cached_init.
+(( $+commands[fnm] )) && eval "$(fnm env --use-on-cd)"
 
 # ── mise (node, java, and more) ─────────────────────────────────────
 if (( $+commands[mise] )); then

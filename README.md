@@ -35,6 +35,16 @@ cd ~/.dotfiles && ./setup.sh
 
 `setup.sh` is idempotent — re-run it any time to re-sync packages and symlinks.
 
+## Secrets
+
+`~/.zshrc` sources `~/.env.secrets` if it exists. Copy the template and fill it in:
+
+```zsh
+cp ~/.dotfiles/.env.secrets.example ~/.env.secrets   # then edit
+```
+
+`~/.env.secrets` is gitignored; only `.env.secrets.example` is tracked.
+
 ## Day-to-day
 
 ```zsh

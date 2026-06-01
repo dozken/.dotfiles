@@ -20,6 +20,12 @@ fi
 info "Syncing Homebrew packages..."
 brew bundle --file=homebrew/Brewfile
 
+# Offer to uninstall anything not in the Brewfile (drift). Off by default.
+read -rp "Remove installed packages NOT in the Brewfile? (y/N) " reply
+if [[ ${reply:-} =~ ^[Yy]$ ]]; then
+  brew bundle cleanup --file=homebrew/Brewfile --force
+fi
+
 command -v stow >/dev/null 2>&1 || brew install stow
 
 # 2. Remove stale symlinks from the old `stow .` layout -----------------

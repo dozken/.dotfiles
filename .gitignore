@@ -5,3 +5,6 @@ tmux/.config/tmux/plugins/
 
 raycast
 fzf
+
+# real secrets — only the .example template is tracked
+.env.secrets
