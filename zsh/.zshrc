@@ -157,6 +157,10 @@ function wt {
     wt "$@"
 }
 
+# ── SDKMAN (java, etc.) ─────────────────────────────────────────────
+export SDKMAN_DIR="$BREW_PREFIX/opt/sdkman-cli/libexec"
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
 # ── Secrets ──────────────────────────────────────────────────────────
 ENV_SECRETS_FILE=$HOME/.env.secrets
 [[ -r $ENV_SECRETS_FILE && -s $ENV_SECRETS_FILE ]] && _source_compiled_if_present "$ENV_SECRETS_FILE"

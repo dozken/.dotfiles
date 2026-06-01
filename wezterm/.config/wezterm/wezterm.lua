@@ -46,9 +46,47 @@ config.mouse_bindings = {
 }
 config.keys = {
 	{
+		key = "Enter",
+		mods = "SHIFT",
+		action = act.SendString("\x1b[13;2u"),
+	},
+	{
 		key = "f",
 		mods = "CMD",
 		action = wezterm.action.ToggleFullScreen,
+	},
+	{
+		key = "0",
+		mods = "CMD",
+		action = act.Multiple({
+			act.SendKey({ key = "a", mods = "CTRL" }),
+			act.SendKey({ key = "0" }),
+		}),
+		when = {
+			app = "tmux",
+		},
+	},
+	{
+		key = "[",
+		mods = "CMD",
+		action = act.Multiple({
+			act.SendKey({ key = "a", mods = "CTRL" }),
+			act.SendKey({ key = "[" }),
+		}),
+		when = {
+			app = "tmux",
+		},
+	},
+	{
+		key = "]",
+		mods = "CMD",
+		action = act.Multiple({
+			act.SendKey({ key = "a", mods = "CTRL" }),
+			act.SendKey({ key = "]" }),
+		}),
+		when = {
+			app = "tmux",
+		},
 	},
 }
 for i = 1, 9 do

@@ -1,3 +1,11 @@
---target=~/.config
---ignore=.stowrc
---ignore=DS_Store
+# Each top-level dir (zsh, tmux, …) is a stow "package" whose contents
+# mirror $HOME. `--target=..` points stow at the parent of this repo,
+# i.e. $HOME, so `cd ~/.dotfiles && stow zsh` links into $HOME directly.
+--target=..
+
+# Never replace a real directory with a symlink into the repo. This keeps
+# e.g. ~/.config/tmux a real dir, so TPM plugins stay machine-local instead
+# of being written back inside the repo.
+--no-folding
+
+--ignore=^\.DS_Store$

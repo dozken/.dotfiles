@@ -1,4 +1,7 @@
 .DS_Store
-tmux/plugins/
+
+# TPM clones plugins into ~/.config/tmux/plugins (machine-local, kept out of repo)
+tmux/.config/tmux/plugins/
+
 raycast
 fzf

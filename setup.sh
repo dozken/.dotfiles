@@ -1,32 +1,49 @@
 #!/usr/bin/env bash
+# Bootstrap / re-sync this machine from the dotfiles repo. Idempotent:
+# safe to run repeatedly.
+set -euo pipefail
 
-# Check if Homebrew is installed, install if not
-if ! command -v brew &> /dev/null; then
-    echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+cd "$DOTFILES"
+
+# Stow packages. Each is a dir whose contents mirror $HOME.
+PACKAGES=(zsh tmux wezterm karabiner ideavimrc claude)
+
+info() { printf '\033[1;34m==>\033[0m %s\n' "$1"; }
+
+# 1. Homebrew + Brewfile ------------------------------------------------
+if ! command -v brew >/dev/null 2>&1; then
+  info "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+info "Syncing Homebrew packages..."
+brew bundle --file=homebrew/Brewfile
+
+command -v stow >/dev/null 2>&1 || brew install stow
+
+# 2. Remove stale symlinks from the old `stow .` layout -----------------
+# Those linked whole package dirs (and junk like setup.sh) into ~/.config.
+info "Cleaning legacy ~/.config symlinks..."
+for link in "$HOME"/.config/*; do
+  if [[ -L "$link" && "$(readlink "$link")" == *.dotfiles* ]]; then
+    rm -f "$link"
+  fi
+done
+
+# 3. Pre-create real target dirs so stow links files, never folds a whole
+#    dir into the repo (keeps room for machine-local data like TPM plugins).
+mkdir -p "$HOME/.config/tmux" "$HOME/.config/wezterm" \
+         "$HOME/.config/karabiner" "$HOME/.claude"
+
+# 4. Stow everything (--restow re-links cleanly on every run) ------------
+info "Stowing: ${PACKAGES[*]}"
+stow --restow "${PACKAGES[@]}"
+
+# 5. macOS defaults (opt-in) --------------------------------------------
+read -rp "Apply macOS system defaults? (y/N) " reply
+if [[ ${reply:-} =~ ^[Yy]$ ]]; then
+  ./scripts/.macos
 fi
 
-# Run brew bundle
-echo "Syncing Homebrew packages..."
-brew bundle --file=./homebrew/Brewfile
-
-# Use GNU Stow to link configurations
-# This assumes you want things in ~/.config/
-echo "Stowing configurations..."
-stow --target="$HOME" .
-
-# Ensure .zshrc is linked correctly (Stow handles this if structured right, 
-# but your current structure has it in zshrc/.zshrc which stows to ~/.zshrc)
-if [ ! -L "$HOME/.zshrc" ]; then
-    echo "Fixing .zshrc symlink..."
-    ln -sf "$HOME/.config/zshrc/.zshrc" "$HOME/.zshrc"
-fi
-
-# Apply macOS defaults (optional/manual trigger recommended)
-read -p "Do you want to apply macOS system defaults? (y/n) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    ./scripts/.macos
-fi
-
-echo "Setup complete. Please restart your terminal."
+info "Done. Start a fresh shell:  exec zsh"

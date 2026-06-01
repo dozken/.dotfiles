@@ -1,50 +1,50 @@
-## Steps to bootstrap a new Mac
+# dotfiles
 
-1. Install Apple's Command Line Tools, which are prerequisites for Git and Homebrew.
+macOS dotfiles, managed with [GNU Stow](https://www.gnu.org/software/stow/).
+
+Each top-level directory is a **stow package** whose contents mirror `$HOME`.
+`stow zsh` symlinks `zsh/.zshrc` → `~/.zshrc`, `zsh/.config/starship.toml` →
+`~/.config/starship.toml`, and so on.
+
+## Layout
+
+| Package      | Links into                              |
+| ------------ | --------------------------------------- |
+| `zsh`        | `~/.zshrc`, `~/.config/starship.toml`   |
+| `tmux`       | `~/.config/tmux/`                       |
+| `wezterm`    | `~/.config/wezterm/`                    |
+| `karabiner`  | `~/.config/karabiner/`                  |
+| `ideavimrc`  | `~/.ideavimrc`                          |
+| `claude`     | `~/.claude/`                            |
+
+Not stowed: `homebrew/` (Brewfile), `scripts/` (added to `PATH` from the repo),
+`vial/` (keyboard layouts, imported manually).
+
+## Bootstrap a new Mac
 
 ```zsh
+# 1. Xcode command line tools (git, etc.)
 xcode-select --install
-```
 
-
-2. Clone repo into new hidden directory.
-
-```zsh
-# Use SSH (if set up)...
+# 2. Clone
 git clone git@github.com:dozken/.dotfiles.git ~/.dotfiles
 
-
-3. Create symlinks in the Home directory to the real files in the repo.
-
-```zsh
-# There are better and less manual ways to do this;
-# investigate install scripts and bootstrapping tools.
-cd ~/.dotfiles/
-stow .
+# 3. Install Homebrew + packages, then symlink everything
+cd ~/.dotfiles && ./setup.sh
 ```
 
+`setup.sh` is idempotent — re-run it any time to re-sync packages and symlinks.
 
-4. Install Homebrew, followed by the software listed in the Brewfile.
+## Day-to-day
 
 ```zsh
-# These could also be in an install script.
+cd ~/.dotfiles
 
-# Install Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Then pass in the Brewfile location...
-brew bundle --file ~/.dotfiles/Brewfile
-
-# ...or move to the directory first.
-cd ~/.dotfiles && brew bundle
+stow <package>            # link one package        (e.g. stow tmux)
+stow --restow <package>   # re-link after changes
+stow -D <package>         # unlink a package
 ```
 
-
-## TODO List
-
-- use GNU stow to support easy of configuration
-- Learn how to use [`defaults`](https://macos-defaults.com/#%F0%9F%99%8B-what-s-a-defaults-command) to record and restore System Preferences and other macOS configurations.
-- Organize these growing steps into multiple script files.
-- Revisit the list in [`.zshrc`](.zshrc) to customize the shell.
-- Find inspiration and examples in other Dotfiles repositories at [dotfiles.github.io](https://dotfiles.github.io/).
-
+`.stowrc` sets `--target=..` (so packages land in `$HOME`) and `--no-folding`
+(so e.g. `~/.config/tmux` stays a real dir and TPM plugins remain
+machine-local, never written back into the repo).
