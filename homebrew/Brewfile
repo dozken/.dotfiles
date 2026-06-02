@@ -1,12 +1,11 @@
-# Resync this file from the machine with:  brew bundle dump --file=homebrew/Brewfile --force
-# Install / update with:  brew bundle --file=homebrew/Brewfile
+# BASE — installed on every machine. Profile extras live in:
+#   homebrew/Brewfile.work   homebrew/Brewfile.home
+# setup.sh installs base + the active profile (DOTFILES_PROFILE, else hostname).
+# Resync a profile:  brew bundle dump --file=homebrew/Brewfile.<profile> --force
 
 # ── Taps ─────────────────────────────────────────────────────────────
-tap "anomalyco/tap"
-tap "ddosify/tap"
-tap "gromgit/fuse"
 tap "homebrew/bundle"
-tap "oven-sh/bun"
+tap "anomalyco/tap"
 
 # ── Shell & prompt ───────────────────────────────────────────────────
 brew "atuin"                       # fuzzy shell history (Ctrl-R)
@@ -16,77 +15,38 @@ brew "starship"
 brew "stow"
 brew "zoxide"
 brew "zsh-autosuggestions"
-brew "zsh-fast-syntax-highlighting"
 brew "zsh-syntax-highlighting"
+brew "zsh-fast-syntax-highlighting"
 
 # ── CLI utilities ────────────────────────────────────────────────────
 brew "bat"
-brew "dust"
-brew "hyperfine"
+brew "fd"
+brew "glow"
 brew "jq"
 brew "lsd"
 brew "neovim"
-brew "pandoc"
-brew "pngquant"
 brew "ripgrep"
 brew "tmux"
 
 # ── Git / forges ─────────────────────────────────────────────────────
+brew "git"
+brew "git-lfs"
 brew "gh"
-brew "glab"
-brew "gitlab-runner"
 brew "lazygit"
 brew "worktrunk"
 
-# ── Languages & toolchains ───────────────────────────────────────────
-brew "fnm"                         # node version manager (this machine)
-brew "mise"                        # runtime manager (used on other machines)
-brew "pyenv"                       # python version manager (other machines)
-brew "sdkman-cli"                  # java/sdk manager (sourced by .zshrc)
-brew "go"
-brew "rustup"
-brew "maven"
-brew "gradle"
-brew "cocoapods"
-brew "yarn"
-brew "oven-sh/bun/bun"
-
-# ── Cloud / infra ────────────────────────────────────────────────────
-brew "azure-cli"
-brew "flyctl"
-brew "tailscale", restart_service: :changed
-
-# ── Databases ────────────────────────────────────────────────────────
-brew "libpq"
-brew "postgresql@14"
-
-# ── Mobile / media ───────────────────────────────────────────────────
-brew "fastlane"
-brew "scrcpy"
-brew "fonttools"
-brew "immich-go"
-brew "weasyprint"
+# ── Runtimes (per-machine version managers, see profile files) ───────
+brew "fnm"                         # node (work)
+brew "mise"                        # runtimes (home)
 
 # ── AI ───────────────────────────────────────────────────────────────
-brew "ollama"
-brew "gemini-cli"
 brew "anomalyco/tap/opencode"
 
-# ── Casks ────────────────────────────────────────────────────────────
+# ── Casks (common GUI apps) ──────────────────────────────────────────
 cask "amethyst"
-cask "android-commandlinetools"
-cask "android-platform-tools"
-cask "antigravity"
 cask "brave-browser"
-cask "docker"
-cask "gcloud-cli"
 cask "google-chrome"
-cask "insomnia"
-cask "intellij-idea"
 cask "karabiner-elements"
 cask "obsidian"
-cask "orbstack"
-cask "qbittorrent"
-cask "steam"
-cask "vlc"
+cask "orbstack"                    # provides docker — no Docker Desktop needed
 cask "wezterm"

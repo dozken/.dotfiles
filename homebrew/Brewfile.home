@@ -1,0 +1,31 @@
+# HOME profile. Installed on top of base Brewfile.
+# Personal machine — media, extra runtimes, misc.
+
+tap "oven-sh/bun"
+
+# ── Extra runtimes / package managers ────────────────────────────────
+brew "go"
+brew "rustup"
+brew "pyenv"                       # python (home; mise may cover this — verify)
+brew "oven-sh/bun/bun"
+brew "yarn"
+
+# ── CLI extras ───────────────────────────────────────────────────────
+brew "dust"
+brew "hyperfine"
+brew "pandoc"
+brew "pngquant"
+brew "fonttools"
+brew "weasyprint"
+brew "tailscale", restart_service: :changed
+
+# ── AI / media ───────────────────────────────────────────────────────
+brew "ollama"
+brew "gemini-cli"
+brew "immich-go"
+
+# ── Casks ────────────────────────────────────────────────────────────
+cask "antigravity"
+cask "qbittorrent"
+cask "steam"
+cask "vlc"

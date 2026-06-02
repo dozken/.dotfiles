@@ -17,14 +17,17 @@ if ! command -v brew >/dev/null 2>&1; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
-info "Syncing Homebrew packages..."
-brew bundle --file=homebrew/Brewfile
-
-# Offer to uninstall anything not in the Brewfile (drift). Off by default.
-read -rp "Remove installed packages NOT in the Brewfile? (y/N) " reply
-if [[ ${reply:-} =~ ^[Yy]$ ]]; then
-  brew bundle cleanup --file=homebrew/Brewfile --force
+# Pick profile: $DOTFILES_PROFILE, else by hostname (work Macs are PAI-*).
+PROFILE="${DOTFILES_PROFILE:-}"
+if [[ -z "$PROFILE" ]]; then
+  case "$(hostname -s)" in
+    PAI-*) PROFILE=work ;;
+    *)     PROFILE=home ;;
+  esac
 fi
+info "Syncing Homebrew packages (base + $PROFILE)..."
+brew bundle --file=homebrew/Brewfile
+[[ -f "homebrew/Brewfile.$PROFILE" ]] && brew bundle --file="homebrew/Brewfile.$PROFILE"
 
 command -v stow >/dev/null 2>&1 || brew install stow
 

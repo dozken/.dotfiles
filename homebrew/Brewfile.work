@@ -1,0 +1,40 @@
+# WORK profile (machine PAI-LQJ4T7WW6V). Installed on top of base Brewfile.
+# Vantage: java/maven backend, gitlab, mobile, cloud.
+
+tap "sdkman/tap"
+tap "minio/stable"
+
+# ── JVM / build ──────────────────────────────────────────────────────
+brew "sdkman/tap/sdkman-cli"       # java SDK manager (sourced by .zshrc)
+brew "maven"
+brew "gradle"
+
+# ── GitLab / CI ──────────────────────────────────────────────────────
+brew "glab"
+brew "gitlab-runner"
+brew "act"                         # run GitHub Actions locally
+
+# ── Cloud / infra ────────────────────────────────────────────────────
+brew "azure-cli"
+brew "flyctl"
+brew "minio/stable/mc"             # minio/S3 client
+brew "mkcert"                      # local TLS certs
+brew "nss"
+
+# ── Databases ────────────────────────────────────────────────────────
+brew "libpq"
+brew "postgresql@14"
+
+# ── Mobile ───────────────────────────────────────────────────────────
+brew "fastlane"
+brew "cocoapods"
+brew "scrcpy"
+
+# ── Casks ────────────────────────────────────────────────────────────
+cask "caffeine"
+cask "figma"
+cask "intellij-idea"
+cask "insomnia"
+cask "android-commandlinetools"
+cask "android-platform-tools"
+cask "gcloud-cli"
