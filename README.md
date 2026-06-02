@@ -35,6 +35,26 @@ cd ~/.dotfiles && ./setup.sh
 
 `setup.sh` is idempotent — re-run it any time to re-sync packages and symlinks.
 
+## Homebrew profiles
+
+Packages are split so each machine installs only what it needs:
+
+| File                    | Installed on            |
+| ----------------------- | ----------------------- |
+| `homebrew/Brewfile`      | every machine (base)    |
+| `homebrew/Brewfile.work` | work (java/gitlab/mobile/cloud) |
+| `homebrew/Brewfile.home` | personal (media, extra runtimes) |
+
+`setup.sh` installs the base then the active profile. The profile is chosen by
+`$DOTFILES_PROFILE`, falling back to the hostname (`PAI-*` → `work`, else `home`):
+
+```zsh
+DOTFILES_PROFILE=home ./setup.sh          # force a profile
+
+# resync a profile from the current machine's installed packages:
+brew bundle dump --file=homebrew/Brewfile.work --force
+```
+
 ## Secrets
 
 `~/.zshrc` sources `~/.env.secrets` if it exists. Copy the template and fill it in:
