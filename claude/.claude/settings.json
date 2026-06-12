@@ -24,5 +24,23 @@
   "skipDangerousModePermissionPrompt": true,
   "theme": "auto",
   "autoCompactEnabled": true,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          { "type": "command", "command": "$HOME/.claude/hooks/notify.sh Notification" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          { "type": "command", "command": "$HOME/.claude/hooks/notify.sh Stop" }
+        ]
+      }
+    ]
+  }
 }
