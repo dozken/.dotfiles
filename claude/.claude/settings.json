@@ -24,6 +24,5 @@
   "skipDangerousModePermissionPrompt": true,
   "theme": "auto",
   "autoCompactEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "model": "haiku"
+  "skipAutoPermissionPrompt": true
 }

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "glm-4.6",
+  "provider": {
+    "qwen-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Qwen vLLM",
+      "options": {
+        "baseURL": "http://10.119.62.29:8000/v1"
+      },
+      "models": {
+        "Qwen/Qwen3.6-27B": {
+          "id": "Qwen/Qwen3.6-27B",
+          "name": "Qwen 3.6 27B",
+          "limit": {
+            "context": 262144,
+            "output": 0
+          }
+        }
+      }
+    },
+    "vitruvian": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Vitruvian",
+      "options": {
+        "baseURL": "https://vitruvian.presight.ai/api/v1"
+      },
+      "models": {
+        "glm-4.6": {
+          "id": "glm-4.6",
+          "name": "GLM 4.6",
+          "limit": {
+            "context": 128000,
+            "output": 0
+          }
+        }
+      }
+    }
+  },
+  "mcp": {
+    "synergy-backend": {
+      "type": "remote",
+      "url": "http://localhost:8080/api/mcp",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer ${SYNERGY_MCP_TOKEN}"
+      }
+    }
+  }
+}

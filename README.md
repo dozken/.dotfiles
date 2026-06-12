@@ -15,7 +15,12 @@ Each top-level directory is a **stow package** whose contents mirror `$HOME`.
 | `wezterm`    | `~/.config/wezterm/`                    |
 | `karabiner`  | `~/.config/karabiner/`                  |
 | `ideavimrc`  | `~/.ideavimrc`                          |
-| `claude`     | `~/.claude/`                            |
+| `claude`     | `~/.claude/` (settings, keybindings)    |
+| `agents`     | `~/.agents/skills/` (Claude skills)     |
+| `opencode`   | `~/.config/opencode/` (config, skills, commands) |
+
+`opencode/` tracks config + skills only; `node_modules`, lockfiles, and
+`antigravity-accounts.json` stay machine-local (its own `.gitignore`).
 
 Not stowed: `homebrew/` (Brewfile), `scripts/` (added to `PATH` from the repo),
 `vial/` (keyboard layouts, imported manually).
