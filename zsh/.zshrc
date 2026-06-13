@@ -107,6 +107,7 @@ export MISE_SHIMS_DIR=${MISE_SHIMS_DIR:-$HOME/.local/share/mise/shims}
 
 path=(
     $HOME/.antigravity/antigravity/bin
+    $HOME/.antigravity-ide/antigravity-ide/bin
     $HOME/.cargo/bin
     $HOME/.docker/bin
     $HOME/.dotfiles/scripts
@@ -166,7 +167,9 @@ function wt {
 }
 
 # ── SDKMAN (java, etc.) ─────────────────────────────────────────────
-export SDKMAN_DIR="$BREW_PREFIX/opt/sdkman-cli/libexec"
+SDKMAN_DIR="$BREW_PREFIX/opt/sdkman-cli/libexec"
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] || SDKMAN_DIR="$HOME/.sdkman"
+export SDKMAN_DIR
 [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
 
 # ── Secrets ──────────────────────────────────────────────────────────
