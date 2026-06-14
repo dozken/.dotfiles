@@ -10,6 +10,8 @@ set smartcase
 set incsearch
 set hlsearch
 
+
+
 set visualbell
 
 " Use system clipboard

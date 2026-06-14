@@ -1,46 +1,43 @@
 {
-  "includeCoAuthoredBy": false,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
+  "model": "opus",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/dozken/.claude/hooks/stop-notify.sh"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
-    "caveman@caveman": true
+    "upgrading-expo@expo-plugins": true,
+    "caveman@caveman": true,
+    "telegram@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
+    "expo-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "expo/skills"
+      }
+    },
     "caveman": {
       "source": {
         "source": "github",
         "repo": "JuliusBrussee/caveman"
       }
-    },
-    "synergy-agents": {
-      "source": {
-        "source": "github",
-        "repo": "Presight-AI/synergy-agents"
-      }
     }
   },
-  "effortLevel": "high",
-  "skipDangerousModePermissionPrompt": true,
-  "theme": "auto",
-  "autoCompactEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "hooks": {
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          { "type": "command", "command": "$HOME/.claude/hooks/notify.sh Notification" }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          { "type": "command", "command": "$HOME/.claude/hooks/notify.sh Stop" }
-        ]
-      }
-    ]
-  }
+  "skipDangerousModePermissionPrompt": true
 }

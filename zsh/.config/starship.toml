@@ -1,32 +1,69 @@
-[container]
-disabled = true
-format = '[$symbol$context]($style) '
-symbol = '🐳 '
+# ── Starship: robbyrussell-inspired with extras ─────────────────────
+# Matches your old prompt style: green arrow, cyan dir, red git branch
+# Plus: command duration, error status, language versions in project dirs
 
-[docker_context]
-disabled = true
+format = """$status$character $directory$git_branch$git_status$git_state\
+$nodejs$golang$rust$python$java$kotlin\
+$cmd_duration"""
 
+add_newline = false
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+
+[status]
+disabled = true  # error is shown via character symbol color
+
+[directory]
+style = "cyan"
+truncation_length = 1       # basename only, like robbyrussell %c
+truncate_to_repo = false
+
+[git_branch]
+format = "[git:\\(](blue)[$branch](red)[\\)](blue) "
+
+[git_status]
+format = "[$ahead_behind]($style) "
+style = "yellow"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇡${ahead_count}⇣${behind_count}"
+
+[git_state]
+format = "[|$state( $progress_current/$progress_total)](red) "
+
+[cmd_duration]
+min_time = 2_000             # show if command took >2s
+format = "took [$duration](yellow) "
+
+# ── Language versions (only shown inside relevant projects) ──────────
 [nodejs]
-disabled = true
-format = '[$symbol$version]($style) '
+format = "[$symbol($version)]($style) "
+symbol = "node "
+style = "green"
 
 [golang]
-format = '[$symbol$version]($style) '
-
-[python]
-format = '[$symbol$version]($style) '
+format = "[$symbol($version)]($style) "
+symbol = "go "
+style = "cyan"
 
 [rust]
-format = '[$symbol$version]($style) '
+format = "[$symbol($version)]($style) "
+symbol = "rs "
+style = "red"
 
-[package]
-disabled = true
+[python]
+format = "[$symbol($version)]($style) "
+symbol = "py "
+style = "yellow"
 
-[aws]
-disabled = true
+[java]
+format = "[$symbol($version)]($style) "
+symbol = "java "
+style = "red"
 
-[gcloud]
-disabled = true
-
-[kubernetes]
-disabled = true
+[kotlin]
+format = "[$symbol($version)]($style) "
+symbol = "kt "
+style = "purple"
