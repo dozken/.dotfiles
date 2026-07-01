@@ -4,25 +4,19 @@
 tap "oven-sh/bun"
 
 # ── Extra runtimes / package managers ────────────────────────────────
-brew "go"
-brew "rustup"
-brew "pyenv"                       # python (home; mise may cover this — verify)
+# go, python, rust, node → managed by mise. yarn dropped (bun-only).
+brew "rustup"                      # toolchain manager (mise's rust symlinks to it)
 brew "oven-sh/bun/bun"
-brew "yarn"
 
 # ── CLI extras ───────────────────────────────────────────────────────
 brew "dust"
 brew "hyperfine"
 brew "pandoc"
-brew "pngquant"
-brew "fonttools"
-brew "weasyprint"
 brew "tailscale", restart_service: :changed
 
 # ── AI / media ───────────────────────────────────────────────────────
 brew "ollama"
 brew "gemini-cli"
-brew "immich-go"
 
 # ── Casks ────────────────────────────────────────────────────────────
 cask "antigravity"

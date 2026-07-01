@@ -4,7 +4,6 @@
 # Resync a profile:  brew bundle dump --file=homebrew/Brewfile.<profile> --force
 
 # ── Taps ─────────────────────────────────────────────────────────────
-tap "homebrew/bundle"
 tap "anomalyco/tap"
 
 # ── Shell & prompt ───────────────────────────────────────────────────
@@ -36,8 +35,7 @@ brew "lazygit"
 brew "worktrunk"
 
 # ── Runtimes (per-machine version managers, see profile files) ───────
-brew "fnm"                         # node (work)
-brew "mise"                        # runtimes (home)
+brew "mise"                        # runtimes (node, java, go, python, rust…)
 
 # ── AI ───────────────────────────────────────────────────────────────
 brew "anomalyco/tap/opencode"

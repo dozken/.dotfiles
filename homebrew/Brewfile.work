@@ -6,8 +6,7 @@ tap "minio/stable"
 
 # ── JVM / build ──────────────────────────────────────────────────────
 brew "sdkman/tap/sdkman-cli"       # java SDK manager (sourced by .zshrc)
-brew "maven"
-brew "gradle"
+# maven, gradle → managed by mise (see profile .tool-versions). gradle also via ./gradlew wrapper.
 
 # ── GitLab / CI ──────────────────────────────────────────────────────
 brew "glab"
@@ -22,8 +21,8 @@ brew "mkcert"                      # local TLS certs
 brew "nss"
 
 # ── Databases ────────────────────────────────────────────────────────
-brew "libpq"
-brew "postgresql@14"
+brew "libpq"                       # psql client lib
+# postgresql@14 removed (deprecated); use mise/orbstack container for a local server
 
 # ── Mobile ───────────────────────────────────────────────────────────
 brew "fastlane"

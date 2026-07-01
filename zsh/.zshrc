@@ -145,11 +145,6 @@ if [[ -o interactive ]]; then
     bindkey '^f' run_tmux_sessionizer
 fi
 
-# ── fnm (node) — auto-switches to .nvmrc on cd ──────────────────────
-# Not cached: `fnm env` emits a per-shell multishell path, so it must run
-# fresh each shell rather than via _source_cached_init.
-(( $+commands[fnm] )) && eval "$(fnm env --use-on-cd)"
-
 # ── mise (node, java, and more) ─────────────────────────────────────
 if (( $+commands[mise] )); then
   function mise() {
