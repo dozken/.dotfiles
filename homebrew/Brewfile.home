@@ -9,6 +9,7 @@ brew "rustup"                      # toolchain manager (mise's rust symlinks to 
 brew "oven-sh/bun/bun"
 
 # ── CLI extras ───────────────────────────────────────────────────────
+brew "aria2"                       # CLI torrent/http downloader (replaced qbittorrent)
 brew "dust"
 brew "hyperfine"
 brew "pandoc"
@@ -20,6 +21,5 @@ brew "gemini-cli"
 
 # ── Casks ────────────────────────────────────────────────────────────
 cask "antigravity"
-cask "qbittorrent"
 cask "steam"
 cask "vlc"
