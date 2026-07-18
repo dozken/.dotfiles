@@ -191,3 +191,7 @@ if [[ -n $TMUX ]]; then
     add-zsh-hook chpwd _tmux_cache_branch
     add-zsh-hook precmd _tmux_cache_branch
 fi
+
+# gib
+export GIB_INSTALL=/Users/dozken/.gib
+export PATH=/Users/dozken/.gib/bin:$PATH
