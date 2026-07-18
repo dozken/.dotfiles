@@ -6,7 +6,6 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
-  "model": "opus",
   "hooks": {
     "Stop": [
       {
@@ -23,7 +22,9 @@
     "upgrading-expo@expo-plugins": true,
     "caveman@caveman": true,
     "telegram@claude-plugins-official": true,
-    "rust-analyzer-lsp@claude-plugins-official": true
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "expo-plugins": {
@@ -39,5 +40,6 @@
       }
     }
   },
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true
 }
