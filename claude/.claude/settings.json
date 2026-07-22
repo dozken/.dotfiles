@@ -41,5 +41,6 @@
     }
   },
   "tui": "fullscreen",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "model": "haiku"
 }
