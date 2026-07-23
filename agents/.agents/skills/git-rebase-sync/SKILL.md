@@ -12,11 +12,11 @@ Use this skill when you need to sync a feature branch onto the latest `origin/{b
 ## Goals
 - Rebase the current branch onto a specified base branch (often the repo default branch like `dev` or `main`).
 - Resolve conflicts deliberately, without guesswork.
-- Keep safety rails: backup ref, confirmations before history-rewriting commands, and safe pushing.
+- Keep safety rails: backup ref, and safe pushing. (Run the rebase itself without asking; still confirm the force-push.)
 
 ## Hard Rules
 - Do not create or switch to a different feature branch. Operate on the current branch name unless I explicitly ask otherwise.
-- Before any history-rewriting command (`git rebase ...`, `git push --force*`), print the exact command(s) you will run and wait for my confirmation.
+- Before a force-push (`git push --force*`), print the exact command(s) you will run and wait for my confirmation. The rebase (`git rebase ...`) runs without asking once preflight + backup are done; still print the command for the record.
 - Create a local backup ref (prefer an annotated tag) before starting the rebase. Do not push backup refs unless I explicitly ask.
 - Prefer `git push --force-with-lease`, never plain `--force`.
 - If the correct conflict resolution is unclear, stop and ask a targeted question. Do not invent product behavior.
@@ -47,8 +47,8 @@ Use this skill when you need to sync a feature branch onto the latest `origin/{b
   - `git rev-list --count --merges origin/{base_branch}..HEAD`
 - If merge commits exist, ask whether to preserve them (`--rebase-merges`) or flatten them (plain rebase).
 
-### 5) Run the rebase (requires confirmation)
-- Print the exact command you intend to run, then wait for confirmation:
+### 5) Run the rebase (no confirmation needed)
+- Print the exact command you intend to run (for the record), then run it without waiting:
   - Typical:
     - `git rebase origin/{base_branch}`
   - With merge preservation:

@@ -177,19 +177,29 @@ _source_compiled_if_present "$ASYNCAPI_AC_ZSH_SETUP_PATH"
 
 export DYLD_LIBRARY_PATH=$HOME/lib
 
-# ── tmux window name = git branch (shell panes) ──────────────────────
-# Cache this pane's branch into a per-window tmux option so
-# automatic-rename-format (see tmux.conf) can show the real branch —
-# incl. the main repo's develop, which the worktree-dir basename hides.
-# Runs on dir change (covers `wt`) and each prompt (covers in-place checkouts).
+# ── tmux window name = repo / worktree branch ────────────────────────
+# Cache a per-window tmux option (@win_name) read by automatic-rename-format
+# (see tmux.conf). Linked worktree → branch (what's checked out); main repo
+# → repo dir name; not a repo → empty (format falls back to the cwd basename).
+# git-dir != git-common-dir is what distinguishes a linked worktree from the
+# main checkout. Runs on dir change (covers `wt`) and each prompt.
 if [[ -n $TMUX ]]; then
     autoload -Uz add-zsh-hook
-    _tmux_cache_branch() {
-        tmux set-option -w -q "@git_branch" \
-            "$(git symbolic-ref --quiet --short HEAD 2>/dev/null)"
+    _tmux_win_name() {
+        local name; local -a r
+        r=("${(@f)$(git rev-parse --git-dir --git-common-dir --show-toplevel 2>/dev/null)}")
+        if (( $#r >= 3 )); then
+            if [[ ${r[1]} != ${r[2]} ]]; then
+                name=$(git symbolic-ref --quiet --short HEAD 2>/dev/null) \
+                    || name=$(git rev-parse --short HEAD 2>/dev/null)
+            else
+                name=${r[3]:t}
+            fi
+        fi
+        tmux set-option -w -q "@win_name" "$name"
     }
-    add-zsh-hook chpwd _tmux_cache_branch
-    add-zsh-hook precmd _tmux_cache_branch
+    add-zsh-hook chpwd _tmux_win_name
+    add-zsh-hook precmd _tmux_win_name
 fi
 
 # gib

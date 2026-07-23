@@ -7,16 +7,43 @@
     "defaultMode": "bypassPermissions"
   },
   "hooks": {
-    "Stop": [
+    "Notification": [
       {
+        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "bash /Users/dozken/.claude/hooks/stop-notify.sh"
+            "command": "$HOME/.claude/hooks/notify.sh Notification"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/notify.sh Stop"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
           }
         ]
       }
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"/Users/dosmukhamed.zhanibek/.claude/plugins/cache/caveman/caveman/63e797cd753b/hooks/caveman-statusline.sh\""
   },
   "enabledPlugins": {
     "upgrading-expo@expo-plugins": true,
@@ -24,7 +51,8 @@
     "telegram@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true
+    "playwright@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "expo-plugins": {
@@ -40,7 +68,11 @@
       }
     }
   },
+  "effortLevel": "high",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
-  "model": "haiku"
+  "model": "haiku",
+  "theme": "auto",
+  "autoCompactEnabled": true,
+  "skipAutoPermissionPrompt": true
 }
