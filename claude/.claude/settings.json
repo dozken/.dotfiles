@@ -4,6 +4,9 @@
     "pr": ""
   },
   "permissions": {
+    "allow": [
+      "mcp__codegraph__*"
+    ],
     "defaultMode": "bypassPermissions"
   },
   "hooks": {
@@ -39,6 +42,16 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "codegraph prompt-hook"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
@@ -50,9 +63,8 @@
     "caveman@caveman": true,
     "telegram@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true
+    "frontend-design@claude-plugins-official": true,
+    "mattpocock-skills@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "expo-plugins": {
@@ -69,10 +81,21 @@
     }
   },
   "effortLevel": "high",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "high"
+    },
+    "claude-fable-5": {
+      "effortLevel": "high"
+    }
+  },
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
-  "model": "haiku",
   "theme": "auto",
+  "editorMode": "normal",
   "autoCompactEnabled": true,
-  "skipAutoPermissionPrompt": true
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "model": "claude-fable-5-1[1m]"
 }

@@ -1,0 +1,3 @@
+# Ask expiry runs on listener uptime, not wall clock
+
+Re-asks and expiry are driven by cumulative LISTENER uptime (time something could actually receive a Reply) plus resume-after-downtime triggers — never wall clock alone; a unit expires only after ≥2 delivered Asks and ≥24h of uptime unanswered, with 72h wall time as a floor. Wall-clock timers were rejected because every loss mechanism is a function of listener downtime: Telegram retains an unconfirmed Reply only 24h, so over a weekend gap a wall clock expires a question the user answered, with the re-ask never having fired (nothing was running at +24h).
