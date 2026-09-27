@@ -205,3 +205,6 @@ fi
 # gib
 export GIB_INSTALL=/Users/dozken/.gib
 export PATH=/Users/dozken/.gib/bin:$PATH
+
+# bun completions
+[ -s "/Users/dozken/.bun/_bun" ] && source "/Users/dozken/.bun/_bun"
