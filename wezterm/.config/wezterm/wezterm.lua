@@ -89,19 +89,13 @@ config.keys = {
 		},
 	},
 }
+-- Cmd+N sends the same bytes as Alt+N (ESC N); tmux binds M-N to window N
 for i = 1, 9 do
-	local keyEntry = {
+	table.insert(config.keys, {
 		key = tostring(i),
 		mods = "CMD",
-		action = act.Multiple({
-			act.SendKey({ key = "a", mods = "CTRL" }),
-			act.SendKey({ key = tostring(i) }),
-		}),
-		when = {
-			app = "tmux",
-		},
-	}
-	table.insert(config.keys, keyEntry)
+		action = act.SendString("\x1b" .. tostring(i)),
+	})
 end
 
 return config
