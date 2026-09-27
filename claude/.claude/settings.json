@@ -44,5 +44,21 @@
     "claude-fable-5": {
       "effortLevel": "high"
     }
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/dozken/.claude/hooks/prompt-time.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash /Users/dozken/.claude/hooks/statusline.sh"
   }
 }
