@@ -204,9 +204,5 @@ if [[ -n $TMUX ]]; then
     add-zsh-hook precmd _tmux_win_name
 fi
 
-# gib
-export GIB_INSTALL=$HOME/.gib
-export PATH=$HOME/.gib/bin:$PATH
-
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
