@@ -4,10 +4,7 @@
     "pr": ""
   },
   "permissions": {
-    "allow": [
-      "mcp__codegraph__*",
-      "mcp__plugin_rkd_chat"
-    ],
+    "allow": [],
     "defaultMode": "auto"
   },
   "hooks": {
@@ -16,11 +13,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "codegraph prompt-hook"
-          },
-          {
-            "type": "command",
-            "command": "bash /Users/dozken/.claude/hooks/prompt-time.sh"
+            "command": "bash $HOME/.claude/hooks/prompt-time.sh"
           }
         ]
       }
@@ -28,7 +21,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash /Users/dozken/.claude/hooks/statusline.sh"
+    "command": "bash $HOME/.claude/hooks/statusline.sh"
   },
   "enabledPlugins": {
     "caveman@caveman": true,
@@ -36,8 +29,7 @@
     "rust-analyzer-lsp@claude-plugins-official": false,
     "typescript-lsp@claude-plugins-official": false,
     "playwright@claude-plugins-official": true,
-    "mattpocock-skills@claude-plugins-official": true,
-    "rkd@rkd-plugins": true
+    "mattpocock-skills@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "caveman": {
@@ -45,14 +37,9 @@
         "source": "github",
         "repo": "JuliusBrussee/caveman"
       }
-    },
-    "rkd-plugins": {
-      "source": {
-        "source": "directory",
-        "path": "/Users/dozken/projects/rkd-claude-plugins"
-      }
     }
   },
+  "effortLevel": "high",
   "modelSettings": {
     "claude-fable-5-1": {
       "effortLevel": "low"
@@ -66,6 +53,9 @@
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
+  "theme": "auto",
+  "editorMode": "normal",
+  "autoCompactEnabled": true,
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
   "autoMode": {

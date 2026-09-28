@@ -3,9 +3,6 @@
 # setup.sh installs base + the active profile (DOTFILES_PROFILE, else hostname).
 # Resync a profile:  brew bundle dump --file=homebrew/Brewfile.<profile> --force
 
-# ── Taps ─────────────────────────────────────────────────────────────
-tap "anomalyco/tap"
-
 # ── Shell & prompt ───────────────────────────────────────────────────
 brew "atuin"                       # fuzzy shell history (Ctrl-R)
 brew "fzf"
@@ -36,9 +33,6 @@ brew "worktrunk"
 
 # ── Runtimes (per-machine version managers, see profile files) ───────
 brew "mise"                        # runtimes (node, java, go, python, rust…)
-
-# ── AI ───────────────────────────────────────────────────────────────
-brew "anomalyco/tap/opencode"
 
 # ── Casks (common GUI apps) ──────────────────────────────────────────
 cask "amethyst"

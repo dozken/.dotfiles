@@ -152,12 +152,9 @@ sudo defaults write com.apple.universalaccess HIDScrollZoomModifierMask -int 262
 # Follow the keyboard focus while zoomed in
 sudo defaults write com.apple.universalaccess closeViewZoomFollowsFocus -bool true
 
-# Disable press-and-hold for keys in favor of key repeat
-defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool true
-
-# Set a blazingly fast keyboard repeat rate
-defaults write NSGlobalDomain KeyRepeat -int 1
-defaults write NSGlobalDomain InitialKeyRepeat -int 10
+# Keyboard repeat rate is left at the macOS default on purpose: KeyRepeat 1 /
+# InitialKeyRepeat 10 repeat so fast that a normal keypress emits a burst of
+# characters. Adjust in System Settings > Keyboard if you want it faster.
 
 # Set language and text formats
 # Note: if you’re in the US, replace `EUR` with `USD`, `Centimeters` with

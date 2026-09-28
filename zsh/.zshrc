@@ -34,6 +34,8 @@ function _source_cached_init() {
 
   (( $+commands[$cmd_name] )) || return
 
+  [[ -d ${cache_file:h} ]] || mkdir -p "${cache_file:h}"
+
   if [[ ! -s "$cache_file" || ${commands[$cmd_name]} -nt "$cache_file" ]]; then
     command "$cmd_name" "$@" >| "$cache_file"
   fi
@@ -203,8 +205,8 @@ if [[ -n $TMUX ]]; then
 fi
 
 # gib
-export GIB_INSTALL=/Users/dozken/.gib
-export PATH=/Users/dozken/.gib/bin:$PATH
+export GIB_INSTALL=$HOME/.gib
+export PATH=$HOME/.gib/bin:$PATH
 
 # bun completions
-[ -s "/Users/dozken/.bun/_bun" ] && source "/Users/dozken/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
