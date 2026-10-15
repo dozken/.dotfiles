@@ -130,12 +130,18 @@ typeset -U path  # deduplicate
 alias v="nvim"
 alias ts="tailscale --socket=\$HOME/.local/share/tailscale/tailscaled.sock"
 alias tsd="tailscaled --tun=userspace-networking --state=\$HOME/.local/share/tailscale/tailscaled.state --socket=\$HOME/.local/share/tailscale/tailscaled.sock"
-alias ls="lsd"
-alias l='ls -l'
-alias la="ls -l --git -a"
-alias lt="ls --tree --depth=2 --long --git"
 alias docker-compose="docker compose"
-alias grep="rg"
+# Claude Code agents write POSIX/bash-style commands; lsd/rg aliases and zsh globbing break them
+if [[ -n $CLAUDECODE ]]; then
+    setopt no_nomatch sh_word_split
+    alias timeout="gtimeout"
+else
+    alias ls="lsd"
+    alias l='ls -l'
+    alias la="ls -l --git -a"
+    alias lt="ls --tree --depth=2 --long --git"
+    alias grep="rg"
+fi
 
 # ── Keybindings ──────────────────────────────────────────────────────
 if [[ -o interactive ]]; then
@@ -206,3 +212,9 @@ fi
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# provider keys for latency measurements
+export OPENAI_API_KEY="$(security find-generic-password -a "$USER" -s OPENAI_API_KEY -w 2>/dev/null)"
+export ANTHROPIC_API_KEY="$(security find-generic-password -a "$USER" -s ANTHROPIC_API_KEY -w 2>/dev/null)"
+export TYPESAFE_API_KEY="$(security find-generic-password -a "$USER" -s TYPESAFE_API_KEY -w 2>/dev/null)"
+
