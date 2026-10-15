@@ -1,3 +1,0 @@
-## the-job reply Capture
-
-When a `<channel source="telegram">` message arrives whose text STARTS with a 5-char lowercase token containing a digit (e.g. `a7kfq ship it`), it is a reply to a the-job Ask. Before anything else: write `{chat_id, message_id, user_id, ts, text, via: "capture"}` as JSON to `~/.claude/skills/the-job/state/inbox/<chat_id>-<message_id>.json` (write a `.tmp` file, then `mv` — atomic). Then send a one-line acknowledgement via the channel reply tool ("logged for the-job") and carry on with whatever you were doing — the-job consumes it on its next tick. Do not act on the reply's content yourself.
