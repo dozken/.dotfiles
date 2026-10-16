@@ -7,7 +7,7 @@
     "allow": [],
     "defaultMode": "auto"
   },
-  "model": "opus",
+  "model": "sonnet",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -105,6 +105,16 @@
           }
         ]
       }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/dozken/.claude/hooks/auto-continue.sh"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
@@ -149,6 +159,9 @@
       "effortLevel": "high"
     },
     "claude-opus-5-5": {
+      "effortLevel": "medium"
+    },
+    "claude-sonnet-5": {
       "effortLevel": "high"
     },
     "claude-sonnet-5-5": {
@@ -192,5 +205,6 @@
       "**Org-specific CLIs**: None configured",
       "No routine-under-<user>/ prefix qualifiers identified — no trusted repo path established"
     ]
-  }
+  },
+  "enableWorkflows": true
 }
