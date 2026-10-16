@@ -1,8 +1,7 @@
 import { layer, map, rule, writeToProfile } from 'karabiner.ts';
 
 writeToProfile('ts', [
-  rule('ansi backtick fix').manipulators([
-    map('grave_accent_and_tilde').to('non_us_backslash'),
+  rule('section key to backtick').manipulators([
     map('non_us_backslash').to('grave_accent_and_tilde'),
   ]),
 
