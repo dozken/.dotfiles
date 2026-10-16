@@ -17,14 +17,15 @@ if ! command -v brew >/dev/null 2>&1; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
-# Pick profile: $DOTFILES_PROFILE, else by hostname (work Macs are PAI-*).
+# Pick profile: $DOTFILES_PROFILE, else the untracked per-machine file
+# ~/.config/dotfiles/profile (contains "work" or "home"), else "home".
+# Never derive it from a tracked hostname pattern: this repo is public.
 PROFILE="${DOTFILES_PROFILE:-}"
-if [[ -z "$PROFILE" ]]; then
-  case "$(hostname -s)" in
-    PAI-*) PROFILE=work ;;
-    *)     PROFILE=home ;;
-  esac
+PROFILE_FILE="$HOME/.config/dotfiles/profile"
+if [[ -z "$PROFILE" && -r "$PROFILE_FILE" ]]; then
+  PROFILE="$(tr -d '[:space:]' < "$PROFILE_FILE")"
 fi
+PROFILE="${PROFILE:-home}"
 info "Syncing Homebrew packages (base + $PROFILE)..."
 brew bundle --file=homebrew/Brewfile
 [[ -f "homebrew/Brewfile.$PROFILE" ]] && brew bundle --file="homebrew/Brewfile.$PROFILE"
@@ -44,6 +45,9 @@ done
 #    dir into the repo (keeps room for machine-local data like TPM plugins).
 mkdir -p "$HOME/.config/tmux" "$HOME/.config/wezterm" \
          "$HOME/.config/karabiner" "$HOME/.claude"
+
+# 3b. Enable repo git hooks (secret / work-name leak guard) -------------
+git config core.hooksPath scripts/git-hooks
 
 # 4. Stow everything (--restow re-links cleanly on every run) ------------
 info "Stowing: ${PACKAGES[*]}"

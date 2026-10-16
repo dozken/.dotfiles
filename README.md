@@ -47,7 +47,8 @@ Packages are split so each machine installs only what it needs:
 | `homebrew/Brewfile.home` | personal (media, extra runtimes) |
 
 `setup.sh` installs the base then the active profile. The profile is chosen by
-`$DOTFILES_PROFILE`, falling back to the hostname (`PAI-*` → `work`, else `home`):
+`$DOTFILES_PROFILE`, else the untracked file `~/.config/dotfiles/profile`
+(`work` or `home`), else `home`:
 
 ```zsh
 DOTFILES_PROFILE=home ./setup.sh          # force a profile
@@ -79,3 +80,15 @@ stow -D <package>         # unlink a package
 `.stowrc` sets `--target=..` (so packages land in `$HOME`) and `--no-folding`
 (so e.g. `~/.config/tmux` stays a real dir and TPM plugins remain
 machine-local, never written back into the repo).
+
+## Keeping work and personal apart
+
+This repo is **public** and used on both a personal and a work Mac, so nothing
+secret or employer-specific may be committed.
+
+- Secrets live only in untracked `~/.env.secrets` (per machine, never synced).
+- The machine profile lives in untracked `~/.config/dotfiles/profile`.
+- `scripts/git-hooks/pre-commit` (enabled by `setup.sh` via `core.hooksPath`)
+  blocks staged secrets, key/env files, and anything matching your private
+  denylist at `~/.config/dotfiles/denylist` (one regex per line: employer
+  name, hostnames, internal domains). Create that file on each machine.

@@ -1,5 +1,5 @@
-# WORK profile (machine PAI-LQJ4T7WW6V). Installed on top of base Brewfile.
-# Vantage: java/maven backend, gitlab, mobile, cloud.
+# WORK profile. Installed on top of base Brewfile.
+# java/maven backend, gitlab, mobile, cloud.
 
 tap "sdkman/tap"
 tap "minio/stable"

@@ -8,3 +8,12 @@ fzf
 
 # real secrets — only the .example template is tracked
 .env.secrets
+
+# never track credentials or machine-local profile data
+.env
+.env.*
+!.env.secrets.example
+*.pem
+*.key
+*.p12
+.config/dotfiles/

@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Block commits that contain secrets or work-identifying strings.
+# Repo is PUBLIC and shared between a personal and a work Mac, so nothing
+# machine- or employer-specific may land here.
+#
+# Extra, private deny-patterns (employer name, hostnames, internal domains)
+# live OUTSIDE the repo in ~/.config/dotfiles/denylist: one extended regex
+# per line, '#' comments allowed. Never commit that file.
+set -euo pipefail
+
+DENYLIST="${DOTFILES_DENYLIST:-$HOME/.config/dotfiles/denylist}"
+
+# Files staged for commit (added/copied/modified/renamed), minus this hook.
+files=()
+while IFS= read -r f; do files+=("$f"); done < <(git diff --cached --name-only --diff-filter=ACMR)
+[[ ${#files[@]} -eq 0 ]] && exit 0
+
+fail=0
+report() { printf '\033[1;31mBLOCKED\033[0m %s\n' "$1" >&2; fail=1; }
+
+# 1. Forbidden filenames -------------------------------------------------
+for f in "${files[@]}"; do
+  case "$f" in
+    .env|.env.*|*/.env|*/.env.*|*.pem|*.key|*.p12|*.pfx|*id_rsa*|*id_ed25519*|*.kdbx|*credentials*.json|*.tfstate|*.npmrc)
+      [[ "$f" == *.example ]] || report "sensitive filename: $f" ;;
+  esac
+done
+
+# 2. Secret patterns in the staged diff (added lines only) -----------------
+SECRET_RE='(AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|glpat-[A-Za-z0-9_-]{15,}|sk-ant-[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9]{32,}|xox[abprs]-[A-Za-z0-9-]{10,}|AIza[0-9A-Za-z_-]{35}|[0-9]{8,10}:[A-Za-z0-9_-]{35}|-----BEGIN [A-Z ]*PRIVATE KEY-----|eyJ[A-Za-z0-9_-]{15,}\.eyJ[A-Za-z0-9_-]{15,}\.)'
+added=$(git diff --cached -U0 --no-color -- . ':!scripts/git-hooks' | grep -E '^\+[^+]' || true)
+if hit=$(grep -nE "$SECRET_RE" <<<"$added"); then
+  report "possible secret in staged changes:"; sed 's/^/    /' <<<"$hit" | cut -c1-120 >&2
+fi
+# Hardcoded assignments like export FOO_TOKEN="realvalue" (not "..." / empty / $VAR)
+if hit=$(grep -nEi '(secret|token|passw(or)?d|api[_-]?key)[A-Z_]*[=:] *["'\'']?[A-Za-z0-9/+_-]{16,}' <<<"$added" | grep -vE '\$\{?[A-Z_]+|\.\.\.|example|changeme|your[_-]'); then
+  report "hardcoded credential-looking assignment:"; sed 's/^/    /' <<<"$hit" | cut -c1-120 >&2
+fi
+
+# 3. Private deny-list (work names, hostnames, internal domains) -----------
+if [[ -r "$DENYLIST" ]]; then
+  pats=$(grep -vE '^\s*(#|$)' "$DENYLIST" | paste -sd'|' -)
+  if [[ -n "$pats" ]] && hit=$(grep -nEi "$pats" <<<"$added"); then
+    report "matches private denylist (work/personal identifier):"; sed 's/^/    /' <<<"$hit" | cut -c1-120 >&2
+  fi
+else
+  printf 'warn: no denylist at %s (work-name check skipped)\n' "$DENYLIST" >&2
+fi
+
+if (( fail )); then
+  printf '\nCommit aborted. Fix it, or bypass once with: git commit --no-verify\n' >&2
+  exit 1
+fi
