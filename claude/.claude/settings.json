@@ -7,7 +7,7 @@
     "allow": [],
     "defaultMode": "auto"
   },
-  "model": "sonnet",
+  "model": "opus",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -15,93 +15,6 @@
           {
             "type": "command",
             "command": "bash $HOME/.claude/hooks/prompt-time.sh"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude/hooks/tmux-state.sh prompt"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude/hooks/tmux-state.sh waiting"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude/hooks/tmux-state.sh stop"
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude/hooks/tmux-state.sh clear"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude/hooks/tmux-state.sh working"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude/hooks/glab-mr-create-guard.sh"
-          }
-        ]
-      }
-    ],
-    "SubagentStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude/hooks/tmux-state.sh substart"
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude/hooks/tmux-state.sh substop"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude/hooks/review-skill-drift.sh"
           }
         ]
       }
@@ -117,6 +30,7 @@
       }
     ]
   },
+  "enableWorkflows": true,
   "statusLine": {
     "type": "command",
     "command": "bash $HOME/.claude/hooks/statusline.sh"
@@ -178,15 +92,25 @@
   "autoCompactEnabled": true,
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
+  "skillOverrides": {
+    "finance:audit-support": "off",
+    "finance:close-management": "off",
+    "finance:financial-statements": "off",
+    "finance:journal-entry": "off",
+    "finance:journal-entry-prep": "off",
+    "finance:reconciliation": "off",
+    "finance:sox-testing": "off",
+    "finance:variance-analysis": "off"
+  },
   "autoMode": {
     "environment": [
       "### Org-wide",
       "**Organization**: None configured",
       "**Cloud provider(s)**: None configured",
-      "**Repository visibility**: Not queryable here — the working directory (/Users/dozken/Downloads) has no git remotes and is not itself a git repository; assume private unless otherwise indicated",
+      "**Repository visibility**: Depends on the working directory's repo; assume private unless otherwise indicated",
       "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
       "**Secrets management**: None configured",
-      "**Default / protected branches**: Not queryable here — no remotes configured",
+      "**Default / protected branches**: Read from the working directory's remote; treat `main` as protected",
       "**CI/CD deploy targets**: None configured",
       "**Network posture**: None configured",
       "**Source control**: The trusted repo and its remote(s) only (no additional orgs configured) — as scoped by the Trusted repo and Repository visibility entries above",
@@ -201,10 +125,9 @@
       "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
       "### User-specific",
       "**Primary use of Claude Code**: software development",
-      "**Trusted repo**: The working directory (/Users/dozken/Downloads) is not a git repository and has no remotes — there is no identifiable trusted repo for this session; treat any git operations as needing explicit confirmation of target",
-      "**Org-specific CLIs**: None configured",
-      "No routine-under-<user>/ prefix qualifiers identified — no trusted repo path established"
+      "**Trusted repo**: The git repository at the session's working directory, its own remote(s), and other worktrees of that repository. If the working directory is not a git repository, treat git operations as needing explicit confirmation of target",
+      "**Org-specific CLIs**: `fj`, the Forgejo CLI",
+      "No routine-under-<user>/ prefix qualifiers identified"
     ]
-  },
-  "enableWorkflows": true
+  }
 }
